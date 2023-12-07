@@ -13,14 +13,19 @@
 #include <cstring>
 #include <math.h>
 #include "listaParticipanti.h"
+
+
 using namespace std;
+
+string currentPath = currentPath + "";
+
 void generate(){
-    filesystem::create_directory("/home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab4/data");
+    filesystem::create_directory(currentPath + "/data");
     for (int c = 1; c <= 5; c++){
         int parts_count = 80 + rand() % 20;
         for (int i = 1; i <= 10; i++)
         {
-            ofstream f("/home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab4/data/RezultateC" + to_string(c) + "_P" + to_string(i) + ".txt");
+            ofstream f(currentPath + "/data/RezultateC" + to_string(c) + "_P" + to_string(i) + ".txt");
 
             for (int k = 1; k <= parts_count; k++)
             {
@@ -44,7 +49,7 @@ void rulareSecventiala(){
         f.close();
     }
 
-    ofstream g("/home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab4/result.txt");
+    ofstream g(currentPath + "/result.txt");
     g << parts_list;
     g.close();
 }
@@ -64,7 +69,7 @@ void runProducer(tsQueue<row>* tsQueue, int pr, int pid)
 
     for (int k = start; k < end; k++){
         int country = k / 10 + 1, part = k % 10 + 1;
-        ifstream f("/home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab4/data/RezultateC" + to_string(country) + "_P" + to_string(part) + ".txt");
+        ifstream f(currentPath + "/data/RezultateC" + to_string(country) + "_P" + to_string(part) + ".txt");
 
         for (int part, score, k = 0; k < 50000 && (f >> part >> score); k++){
             auto aux = new row{part, score};
@@ -111,7 +116,7 @@ void parallel(int pr, int pw)
 
     delete[] producers;
 
-    ofstream g("/home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab4/result.txt");
+    ofstream g(currentPath + "/result.txt");
     g << listaParticipanti;
     g.close();
 }
