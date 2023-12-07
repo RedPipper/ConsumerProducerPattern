@@ -1,0 +1,3 @@
+/home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab4/cmake-build-lab4/CMakeFiles/Lab4.dir
+/home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab4/cmake-build-lab4/CMakeFiles/edit_cache.dir
+/home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab4/cmake-build-lab4/CMakeFiles/rebuild_cache.dir
