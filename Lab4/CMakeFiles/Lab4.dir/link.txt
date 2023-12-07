@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/Lab4.dir/tsQueue.cpp.o CMakeFiles/Lab4.dir/main.cpp.o -o Lab4 

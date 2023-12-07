@@ -9,4 +9,4 @@ add_executable(Lab4
         main.cpp
         listaParticipanti.h)
 
-target_compile_options(Lab4 PRIVATE -Wall -O2)
+target_compile_options(Lab4 PRIVATE -O5)

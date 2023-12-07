@@ -11,6 +11,7 @@
 #include <atomic>
 #include <unistd.h>
 #include <cstring>
+#include <math.h>
 #include "listaParticipanti.h"
 using namespace std;
 void generate(){
@@ -83,7 +84,7 @@ void runConsumer(tsQueue<row>* queue, std::atomic<bool>* remaining, listaPartici
                 parts_list->add_score(x->part_id, x->score);
             }
             else
-                sleep(1);
+                this_thread::sleep_for(std::chrono::microseconds (1));
         }
     }
 }
@@ -130,8 +131,8 @@ int main(int argc, char** argv)
         parallel(pr, pw);
     }
     auto t_end = std::chrono::high_resolution_clock::now();
-    double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end - t_start).count();
-    printf("%f\n", elapsed_time_ms);
+    long elapsed_time_ms = std::chrono::duration_cast<chrono::microseconds>(t_end - t_start).count();
+    printf("%ld\n", elapsed_time_ms);
 
     return 0;
 }

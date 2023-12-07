@@ -46,11 +46,7 @@
 				},
 				{
 					"backtrace" : 2,
-					"fragment" : "-Wall"
-				},
-				{
-					"backtrace" : 2,
-					"fragment" : "-O2"
+					"fragment" : "-O5"
 				}
 			],
 			"language" : "CXX",

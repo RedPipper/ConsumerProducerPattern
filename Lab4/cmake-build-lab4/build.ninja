@@ -51,13 +51,13 @@ build cmake_object_order_depends_target_Lab4: phony || CMakeFiles/Lab4.dir
 
 build CMakeFiles/Lab4.dir/tsQueue.cpp.o: CXX_COMPILER__Lab4_unscanned_Debug /home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab4/tsQueue.cpp || cmake_object_order_depends_target_Lab4
   DEP_FILE = CMakeFiles/Lab4.dir/tsQueue.cpp.o.d
-  FLAGS = -g -fdiagnostics-color=always -Wall -O2
+  FLAGS = -g -fdiagnostics-color=always -O5
   OBJECT_DIR = CMakeFiles/Lab4.dir
   OBJECT_FILE_DIR = CMakeFiles/Lab4.dir
 
 build CMakeFiles/Lab4.dir/main.cpp.o: CXX_COMPILER__Lab4_unscanned_Debug /home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab4/main.cpp || cmake_object_order_depends_target_Lab4
   DEP_FILE = CMakeFiles/Lab4.dir/main.cpp.o.d
-  FLAGS = -g -fdiagnostics-color=always -Wall -O2
+  FLAGS = -g -fdiagnostics-color=always -O5
   OBJECT_DIR = CMakeFiles/Lab4.dir
   OBJECT_FILE_DIR = CMakeFiles/Lab4.dir
 
