@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab4
+CMAKE_SOURCE_DIR = /home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab5
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab4
+CMAKE_BINARY_DIR = /home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab5
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab4/CMakeFiles /home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab4//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab5/CMakeFiles /home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab5//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab4/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab5/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -117,24 +117,48 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named Lab4
+# Target rules for targets named Lab5
 
 # Build rule for target.
-Lab4: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Lab4
-.PHONY : Lab4
+Lab5: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Lab5
+.PHONY : Lab5
 
 # fast build rule for target.
-Lab4/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab4.dir/build.make CMakeFiles/Lab4.dir/build
-.PHONY : Lab4/fast
+Lab5/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/build
+.PHONY : Lab5/fast
+
+listaParticipanti.o: listaParticipanti.cpp.o
+.PHONY : listaParticipanti.o
+
+# target to build an object file
+listaParticipanti.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/listaParticipanti.cpp.o
+.PHONY : listaParticipanti.cpp.o
+
+listaParticipanti.i: listaParticipanti.cpp.i
+.PHONY : listaParticipanti.i
+
+# target to preprocess a source file
+listaParticipanti.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/listaParticipanti.cpp.i
+.PHONY : listaParticipanti.cpp.i
+
+listaParticipanti.s: listaParticipanti.cpp.s
+.PHONY : listaParticipanti.s
+
+# target to generate assembly for a file
+listaParticipanti.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/listaParticipanti.cpp.s
+.PHONY : listaParticipanti.cpp.s
 
 main.o: main.cpp.o
 .PHONY : main.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab4.dir/build.make CMakeFiles/Lab4.dir/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -142,7 +166,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab4.dir/build.make CMakeFiles/Lab4.dir/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -150,7 +174,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab4.dir/build.make CMakeFiles/Lab4.dir/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 tsQueue.o: tsQueue.cpp.o
@@ -158,7 +182,7 @@ tsQueue.o: tsQueue.cpp.o
 
 # target to build an object file
 tsQueue.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab4.dir/build.make CMakeFiles/Lab4.dir/tsQueue.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/tsQueue.cpp.o
 .PHONY : tsQueue.cpp.o
 
 tsQueue.i: tsQueue.cpp.i
@@ -166,7 +190,7 @@ tsQueue.i: tsQueue.cpp.i
 
 # target to preprocess a source file
 tsQueue.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab4.dir/build.make CMakeFiles/Lab4.dir/tsQueue.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/tsQueue.cpp.i
 .PHONY : tsQueue.cpp.i
 
 tsQueue.s: tsQueue.cpp.s
@@ -174,7 +198,7 @@ tsQueue.s: tsQueue.cpp.s
 
 # target to generate assembly for a file
 tsQueue.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab4.dir/build.make CMakeFiles/Lab4.dir/tsQueue.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Lab5.dir/build.make CMakeFiles/Lab5.dir/tsQueue.cpp.s
 .PHONY : tsQueue.cpp.s
 
 # Help Target
@@ -185,7 +209,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... Lab4"
+	@echo "... Lab5"
+	@echo "... listaParticipanti.o"
+	@echo "... listaParticipanti.i"
+	@echo "... listaParticipanti.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

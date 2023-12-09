@@ -7,101 +7,98 @@
 #include <mutex>
 #include <condition_variable>
 #include <iostream>
+#include <atomic>
+
 using namespace std;
-
-
 
 template <typename T>
 class tsQueue {
 private:
     struct node{
-        const T* data;
-        node* before;
-
-        node& operator=(const node& other)
-        {
-            if(other != this){
-                this->data = other.data;
-                this->before = other.before;
-            }
-
-            return *this;
-        }
+        T* data;
+        node* next;
     };
-    node* TAIL;
-    node* HEAD;
-    int maxSize = 0;
-    int nrOfElems = 0;
-    mutex m_writing, m_reading;
-    condition_variable reading, writing;
 
-    bool pushWrapper(const T* object){
-        if(!isFull()){
-            ++nrOfElems;
-            if(nrOfElems == 1){
-                HEAD = new node{object, nullptr};
-                TAIL = HEAD;
-            }else{
-                node* aux = new node{object, nullptr};
-                HEAD->before = aux;
-                HEAD = aux;
-            }
-            return true;
-        }
-        return false;
-    }
-
-    const T* getWrapper(){
-        if(!isEmpty()){
-            --nrOfElems;
-            const T* aux = TAIL->data;
-            node* aNode = TAIL;
-            TAIL = TAIL->before;
-
-            delete aNode;
-            return aux;
-        }
-        return nullptr;
-    }
-
+    int capacity;
+    atomic<int> size;
+    atomic<int> activeReaders = 0;
+    bool active = true;
+    node* tail;
+    node* head;
+    mutable mutex qMutex;
+    condition_variable qEmpty_;
+    condition_variable qFull_;
 
 public:
+    explicit tsQueue(int capacity) : capacity(capacity), size(0), tail(nullptr), head(nullptr){}
 
-    bool isEmpty(){
-        return nrOfElems == 0;
+    void putAtomic(T* item){
+        if(size == 0){
+            head = tail = new node{item, nullptr};
+        }else{
+            head->next = new node{item, nullptr};
+            head = head->next;
+        }
+        ++size;
     }
 
-    bool isFull(){
-        return nrOfElems == maxSize;
+
+    void put(T* item){
+        unique_lock<mutex> lock(qMutex);
+        qFull_.wait(lock, [&]{return size.load() < capacity;});
+        putAtomic(item);
+
+        qEmpty_.notify_one();
     }
 
-    explicit tsQueue(int maxSize){
-        this->maxSize = maxSize;
+    T* popAtomic(){
+        if(size == 0)return nullptr;
+        T* aux = tail->data;
+        node* an = tail;
+        if(tail)tail = tail->next;
+
+        delete an;
+        --size;
+
+        return aux;
     }
 
+    T* pop(){
+        unique_lock<mutex> lock(qMutex);
+        ++activeReaders;
+        qEmpty_.wait(lock, [&]{return !active || size.load() > 0;});
 
-    void push(const T* data){
-        unique_lock<mutex> lock(m_writing);
-        writing.wait(lock, [this]{return this->nrOfElems < this->maxSize;});
-        pushWrapper(data);
+
+        T* aux = popAtomic();
+        --activeReaders;
+
+        qFull_.notify_one();
+
+        return aux;
+    }
+
+    bool isActive(){
+        return active;
+    }
+
+    int getSize(){
+        return size.load();
+    }
+
+    void stop(){
+        unique_lock<mutex> lock(qMutex);
+        active = false;
         lock.unlock();
-        reading.notify_one();
+
+        while(activeReaders.load() > 0){
+            lock.lock();
+            qEmpty_.notify_all();
+            lock.unlock();
+        }
     }
-
-    const T* get(){
-        unique_lock<mutex> lock(m_reading);
-        reading.wait(lock, [this]{return this->nrOfElems > 0;});
-
-        const T* to_ret = getWrapper();
-
-        lock.unlock();
-        writing.notify_one();
-
-        return to_ret;
-    }
-
 
 };
+
 
 
 #endif //CONSUMERPRODUCERPATTERN_TSQUEUE_H

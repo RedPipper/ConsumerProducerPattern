@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/Lab5.dir/main.cpp.o CMakeFiles/Lab5.dir/tsQueue.cpp.o CMakeFiles/Lab5.dir/listaParticipanti.cpp.o -o Lab5 

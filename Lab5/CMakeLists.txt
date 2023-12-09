@@ -7,4 +7,8 @@ add_executable(Lab5
         main.cpp
         tsQueue.h
         tsQueue.cpp
-        InputParser.h)
+        listaParticipanti.h
+        listaParticipanti.cpp
+)
+target_compile_options(Lab5 PRIVATE -O5 )
+

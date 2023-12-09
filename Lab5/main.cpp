@@ -7,82 +7,127 @@
 #include <fstream>
 #include <map>
 #include "tsQueue.h"
-#include "InputParser.h"
+#include "listaParticipanti.h"
+#include <cstring>
+#include <filesystem>
+#include <atomic>
+
 using namespace std;
-tsQueue< pair<int, int>> Q(50);
-map<int, int> concMap;
-mutex m_concMap;
-int reads[200];
 
+string currentPath = "/home/tefan/Facultate/PPD/ConsumerProducerPattern/Lab5";
+struct row{
+    int part_id;
+    int score;
+};
+mutex idMutex;
+map<int, mutex> idLockMap;
 
-void writeToQueue(int thread_id){
-    for(int i=thread_id * 100;i<(thread_id+1)*100;++i){
-        auto aux = new pair<int, int>(thread_id, i);
-        Q.push(aux);
+void generate(){
+    filesystem::create_directory(currentPath + "/data");
+    srand(time(nullptr));
+    for (int c = 1; c <= 5; c++){
+        int parts_count = 80 + rand() % 20;
+        for (int i = 1; i <= 10; i++)
+        {
+            ofstream f(currentPath + "/data/RezultateC" + to_string(c) + "_P" + to_string(i) + ".txt");
+            for (int k = 1; k <= parts_count; k++)
+            {
+                int score = (unsigned)rand() % 100 == 8 ? -1 : rand() % 11;
+                f << 100 * c + k << " " << score << "\n";
+            }
+
+            f.close();
+
+        }
     }
 }
 
-void readFromQueue(int thread_id){
-    for(int i=0;i<100;++i){
-        auto aux = Q.get();
-        reads[i + 100*(thread_id - 1)] = aux->second;
+void rulareSecventiala(){
+    listaParticipanti parts_list;
+    for (const auto& entry : filesystem::directory_iterator(currentPath + "/data"))
+    {
+        ifstream f(entry.path());
+        for (int part, score; f >> part >> score; parts_list.add_score(part, score));
+        f.close();
+    }
+
+    ofstream g(currentPath + "/result_secv.txt");
+    g << parts_list;
+    g.close();
+}
+
+void runConsumer(tsQueue<row>* prodQueue, listaParticipanti* listaParticipanti, int pid){
+    int entries = 0;
+    while(prodQueue->isActive() || prodQueue->getSize()){
+        auto x = prodQueue->pop();
+        if(x){
+            idMutex.lock();
+            lock_guard<mutex> lock(idLockMap[x->part_id]);
+            idMutex.unlock();
+            listaParticipanti->add_score(x->part_id, x->score);
+            ++entries;
+        }
+
+    }
+    printf(" \n");
+}
+
+void runProducer(tsQueue<row>* prodQueue, int pr, int pid){
+    int q = 50 / pr, r = 50 % pr;
+    int start = pid * q + (r <= pid ? r : pid);
+    int end = (pid + 1) * q + (r <= (pid + 1) ? r : pid + 1);
+    for (int k = start; k < end; k++){
+        int country = k / 10 + 1, part = k % 10 + 1;
+        ifstream f(currentPath + "/data/RezultateC" + to_string(country) + "_P" + to_string(part) + ".txt");
+
+        for (int part, score, k = 0; k < 50000 && (f >> part >> score); k++){
+            auto aux = new row{part, score};
+            prodQueue->put(aux);
+        }
+
+        f.close();
     }
 }
 
-void readerThread(const string& filePath){
-    ifstream fin(filePath);
-    int C_ID, PUNCTAJ;
-    while(fin>>C_ID>>PUNCTAJ){
-        Q.push(new pair<int, int>(C_ID, PUNCTAJ));
-    }
+void rulareParalela(int pr, int pw){
+    listaParticipanti listaParticipanti(true);
+    tsQueue<row> prodQueue(100);
+    thread* consumers = new thread[pw]{};
+    for (int p = 0; p < pw; p++) consumers[p] = thread(runConsumer, &prodQueue, &listaParticipanti, p);
+
+
+    thread* producers = new thread[pr]{};
+    for (int p = 0; p < pr; p++) producers[p] = thread(runProducer, &prodQueue, pr, p);
+
+    for (int p = 0; p < pr; p++) producers[p].join();
+
+    prodQueue.stop();
+    for (int p = 0; p < pw; p++) consumers[p].join();
+
+    delete[] producers;
+
+    ofstream g(currentPath + "/result_par.txt");
+    g << listaParticipanti;
+    g.close();
 }
 
-void workerThread(){
-
-}
 
 int main(int argc, char** argv){
-    auto parser = new InputParser(argc, argv);
-
-    if(!parser->cmdOptionExists("-p")){
-        cout<<"Please insert the number of threads\n";
-        exit(1);
+//        generate();
+    auto t_start = std::chrono::high_resolution_clock::now();
+    if (argc > 1 && strcmp(argv[1], "secv") == 0)
+    {
+        rulareSecventiala();
     }
-    if(!parser->cmdOptionExists("-f")){
-        cout<<"Please insert the file to get the files from\n";
-        exit(1);
+    else
+    {
+        int pw = argc > 2 ? atoi(argv[2]) : 16;
+        int pr = argc > 3 ? atoi(argv[3]) : 1;
+        rulareParalela(pr, pw);
     }
-    if(!parser->cmdOptionExists("-o")){
-        cout<<"Please insert the output file\n";
-        exit(1);
-    }
-
-
-    int p = stoi(parser->getCmdOption("-p"));
-    string files = parser->getCmdOption("-f");
-    string outputFile = parser->getCmdOption("-o");
-
-    vector<string> list;
-    ifstream fin(files);
-
-    string aux;
-    while(fin>>aux){
-        list.push_back(aux);
-    }
-    fin.close();
-    int p_r = (int)list.size();
-    int p_w = p - p_r;
-    thread threads[p];
-    for(int i=0; i<p_r;++i){
-        threads[i] = thread(readerThread, list[i]);
-    }
-    for(int i=0;i<p_w;++i){
-        threads[p_r + i] = thread(workerThread);
-    }
-
-    for(int i = 0; i < p; ++i){
-        threads[i].join();
-    }
+    auto t_end = std::chrono::high_resolution_clock::now();
+    long elapsed_time_ms = std::chrono::duration_cast<chrono::microseconds>(t_end - t_start).count();
+    printf("%ld\n", elapsed_time_ms);
 
     return 0;
 }
